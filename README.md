@@ -1,6 +1,8 @@
 # Mehul Sain — Portfolio
 
-A production-ready personal portfolio built with React, TypeScript, Vite, Tailwind CSS, Framer Motion, and GSAP.
+Personal site for Mehul Sain, built with React, TypeScript, Vite, Tailwind CSS, Framer Motion, and GSAP.
+
+The page is one scroll: hero, about, journey, selected work, and contact. It includes a loader, theme toggle, magnetic buttons, a custom cursor, and a WhatsApp link from `VITE_WHATSAPP_NUMBER`. Profile copy lives in `src/data/profile.ts`.
 
 ## Local development
 
