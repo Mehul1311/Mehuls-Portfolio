@@ -1,132 +1,59 @@
 import { useMemo, useState } from 'react'
-import { getWhatsAppUrl } from '../lib/env'
 
 type Status = 'idle' | 'sending' | 'sent' | 'error'
+
+type ApiResponse = {
+  ok?: boolean
+  error?: string
+}
 
 export function ContactForm() {
   const [status, setStatus] = useState<Status>('idle')
   const [error, setError] = useState<string | null>(null)
-
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
-
+  const [website, setWebsite] = useState('')
   const disabled = status === 'sending'
-  const canSubmit = useMemo(() => {
-    return name.trim().length >= 2 && email.trim().length >= 5 && message.trim().length >= 10
-  }, [name, email, message])
+  const canSubmit = useMemo(() => name.trim().length >= 2 && email.trim().length >= 5 && message.trim().length >= 10, [name, email, message])
 
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault()
+  async function onSubmit(event: React.FormEvent) {
+    event.preventDefault()
     if (!canSubmit || disabled) return
     setStatus('sending')
     setError(null)
 
     try {
-      const whatsappUrl = getWhatsAppUrl()
-      if (!whatsappUrl) {
-        throw new Error('WhatsApp contact is not configured.')
-      }
-
-      const waText = encodeURIComponent(
-        `*New Message from Portfolio*\n\n*Name:* ${name}\n*Email:* ${email}\n\n*Message:*\n${message}`
-      )
-
-      // Open WhatsApp in a new tab
-      window.open(`${whatsappUrl}?text=${waText}`, '_blank', 'noopener,noreferrer')
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, message, website }),
+      })
+      const result = await response.json().catch(() => ({})) as ApiResponse
+      if (!response.ok || !result.ok) throw new Error(result.error ?? 'The email API is unavailable. Restart the development server and try again.')
 
       setStatus('sent')
       setName('')
       setEmail('')
       setMessage('')
-
-      // Reset after a few seconds
-      setTimeout(() => setStatus('idle'), 5000)
+      window.setTimeout(() => setStatus('idle'), 5000)
     } catch (caught) {
       setStatus('error')
-      setError(caught instanceof Error ? caught.message : 'Something went wrong. Please try again.')
+      setError(caught instanceof Error ? caught.message : 'Transmission failed. Please try again.')
     }
   }
 
   return (
-    <form
-      onSubmit={onSubmit}
-      className="rounded-[1.75rem] border border-[var(--stroke)] bg-[var(--surface)] p-6 shadow-[0_24px_80px_-32px_rgba(0,0,0,0.5)] md:p-8"
-    >
-      <div className="grid gap-4">
-        <label className="grid gap-2 text-sm text-[var(--muted)]">
-          Name
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="min-h-[44px] rounded-2xl border border-[var(--stroke)] bg-[var(--bg0)]/80 px-4 py-2.5 text-base text-[var(--text)] outline-none focus:border-[var(--accent)]/40 sm:text-sm"
-            placeholder="Your name"
-            disabled={disabled}
-            autoComplete="name"
-            inputMode="text"
-          />
-        </label>
-
-        <label className="grid gap-2 text-sm text-[var(--muted)]">
-          Email
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="min-h-[44px] rounded-2xl border border-[var(--stroke)] bg-[var(--bg0)]/80 px-4 py-2.5 text-base text-[var(--text)] outline-none focus:border-[var(--accent)]/40 sm:text-sm"
-            placeholder="you@example.com"
-            disabled={disabled}
-            autoComplete="email"
-            inputMode="email"
-          />
-        </label>
-
-        <label className="grid gap-2 text-sm text-[var(--muted)]">
-          Message
-          <textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className="min-h-28 resize-y rounded-2xl border border-[var(--stroke)] bg-[var(--bg0)]/80 px-4 py-2.5 text-base text-[var(--text)] outline-none focus:border-[var(--accent)]/40 sm:text-sm"
-            placeholder="Tell me about your project…"
-            disabled={disabled}
-          />
-        </label>
+    <form className="cyber-form" onSubmit={onSubmit}>
+      <input className="form-honeypot" name="website" value={website} onChange={(event) => setWebsite(event.target.value)} tabIndex={-1} autoComplete="off" aria-hidden="true" />
+      <div className="form-grid">
+        <label className="field-label">01 / Your name<input value={name} onChange={(event) => setName(event.target.value)} placeholder="Enter identification" disabled={disabled} autoComplete="name" maxLength={100} required /></label>
+        <label className="field-label">02 / Email address<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="name@domain.com" disabled={disabled} autoComplete="email" maxLength={254} required /></label>
+        <label className="field-label">03 / Project brief<textarea value={message} onChange={(event) => setMessage(event.target.value)} placeholder="Describe the idea, problem or mission..." disabled={disabled} minLength={10} maxLength={5000} required /></label>
       </div>
-
-      <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-        <button
-          type="submit"
-          disabled={!canSubmit || disabled}
-          className="min-h-[44px] rounded-full border border-[#25D366]/30 bg-[#25D366] px-5 py-2.5 text-sm font-semibold text-neutral-950 shadow-[0_16px_48px_-12px_rgba(37,211,102,0.4)] transition hover:bg-[#22c35e] disabled:cursor-not-allowed disabled:opacity-50 flex items-center gap-2"
-        >
-          {status === 'sending' ? (
-            'Opening WhatsApp…'
-          ) : status === 'sent' ? (
-            'Sent!'
-          ) : (
-            <>
-              Send via WhatsApp
-              <span className="text-black/60">↗</span>
-            </>
-          )}
-        </button>
-
-        <div className="text-xs text-[var(--muted)]">
-          {status === 'sent'
-            ? 'Thank you! I will get back to you soon.'
-            : 'Usually replies within 24 hours.'}
-        </div>
-      </div>
-
-      {status === 'error' && error ? (
-        <p className="mt-4 text-sm leading-relaxed text-red-300/90">{error}</p>
-      ) : null}
-
-      {status === 'sent' ? (
-        <p className="mt-4 text-xs leading-relaxed text-[#25D366]/90">
-          ✓ WhatsApp opened successfully.
-        </p>
-      ) : null}
+      <div className="form-footer"><button className="submit-signal" type="submit" disabled={!canSubmit || disabled}>{status === 'sending' ? 'Transmitting...' : status === 'sent' ? 'Signal sent ✓' : 'Send message ↗'}</button><span className="form-hint">SECURE EMAIL CHANNEL<br />RESPONSE / ~24H</span></div>
+      {status === 'error' && error && <p className="form-message error">ERROR: {error}</p>}
+      {status === 'sent' && <p className="form-message">SUCCESS: Your message was delivered.</p>}
     </form>
   )
 }

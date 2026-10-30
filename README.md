@@ -1,8 +1,6 @@
 # Mehul Sain — Portfolio
 
-Personal site for Mehul Sain, built with React, TypeScript, Vite, Tailwind CSS, Framer Motion, and GSAP.
-
-The page is one scroll: hero, about, journey, selected work, and contact. It includes a loader, theme toggle, magnetic buttons, a custom cursor, and a WhatsApp link from `VITE_WHATSAPP_NUMBER`. Profile copy lives in `src/data/profile.ts`.
+A cyber-futuristic portfolio built with React, TypeScript, Vite, Framer Motion, GSAP and a secure Nodemailer contact endpoint.
 
 ## Local development
 
@@ -14,12 +12,30 @@ Copy-Item .env.example .env
 npm run dev
 ```
 
-Update `.env` with the values for your environment. Variables prefixed with `VITE_` are embedded in the browser bundle and must never contain secrets.
+`npm run dev` runs the frontend. The `/api/contact` serverless function runs automatically after deployment on Vercel. To test both the frontend and function locally, use the Vercel CLI:
+
+```bash
+npx vercel dev
+```
+
+## Contact email configuration
+
+Copy `.env.example` to `.env` and replace the placeholder values. These variables are server-only and must never use a `VITE_` prefix:
 
 | Variable | Required | Purpose |
 | --- | --- | --- |
-| `VITE_WHATSAPP_NUMBER` | Yes | WhatsApp destination in E.164 digits, without `+` |
-| `VITE_API_URL` | Only when using the API helpers | Backend URL without a trailing slash |
+| `SMTP_HOST` | Yes | SMTP server, such as `smtp.gmail.com` |
+| `SMTP_PORT` | Yes | Usually `465` for secure SMTP or `587` for STARTTLS |
+| `SMTP_SECURE` | Yes | `true` for port 465; normally `false` for port 587 |
+| `SMTP_USER` | Yes | SMTP account email address |
+| `SMTP_PASS` | Yes | SMTP or provider app password |
+| `CONTACT_TO` | Yes | Inbox that receives enquiries |
+| `CONTACT_FROM` | Yes | Verified sender; normally the same as `SMTP_USER` |
+| `VITE_WHATSAPP_NUMBER` | No | Keeps the separate WhatsApp profile link enabled |
+
+For Gmail, enable two-step verification and create a Google App Password. Use that 16-character app password as `SMTP_PASS`; do not use your regular Google password.
+
+When deploying on Vercel, add the same SMTP variables under **Project Settings → Environment Variables**, then redeploy. Do not commit a real `.env` file.
 
 ## Quality checks
 
@@ -27,17 +43,4 @@ Update `.env` with the values for your environment. Variables prefixed with `VIT
 npm run check
 ```
 
-This runs ESLint, TypeScript compilation, and the optimized Vite production build. The deployable output is generated in `dist/`.
-
-## Deploy to Vercel
-
-1. Import the repository into Vercel.
-2. Add `VITE_WHATSAPP_NUMBER` under Project Settings → Environment Variables.
-3. Add `VITE_API_URL` if the backend API helpers are used.
-4. Deploy. `vercel.json` defines the build, output directory, asset caching, and baseline security headers.
-
-The same app can be deployed to any static host by running `npm ci && npm run build` and publishing `dist/`.
-
-## Environment safety
-
-Local `.env` variants, build output, dependencies, logs, coverage, and tool caches are ignored by Git. Only `.env.example` is committed as the configuration template.
+This runs ESLint, TypeScript compilation and the optimized Vite build.
