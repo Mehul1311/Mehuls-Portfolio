@@ -135,7 +135,7 @@ export const profile = {
     githubRepos: 'https://github.com/Mehul1311?tab=repositories',
     medium: 'https://medium.com/@mehulsain1603',
   },
-  about: `I'm a full-stack developer working across the MERN stack and Next.js, turning ideas into real products — storefronts, ordering systems, marketplaces, admin dashboards and payment flows.
+  about: `I'm Mehul Sain, a software engineer and full-stack developer working across the MERN stack and Next.js, turning ideas into real products — storefronts, ordering systems, marketplaces, admin dashboards and payment flows.
 
 I currently work as a Software Engineer at Techyukt Solutions, shipping production MERN features and third-party API integrations. Alongside that I've built CampusNest — a campus marketplace with Razorpay checkout, Docker and an admin console — and an AI-powered KYC system that reads identity documents with EasyOCR.
 
