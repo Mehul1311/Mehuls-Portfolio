@@ -53,7 +53,7 @@ function App() {
       <footer className="site-footer">
         <div className="container footer-inner">
           <a href="#home" className="footer-brand"><span className="brand-mark">{profile.initials}</span>{profile.name}</a>
-          <p>Designed &amp; engineered by {profile.name}</p>
+          <p>Official website of {profile.name}</p>
           <span>© {new Date().getFullYear()} · {profile.location}</span>
         </div>
       </footer>
