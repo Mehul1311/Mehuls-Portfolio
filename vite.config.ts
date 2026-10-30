@@ -90,9 +90,14 @@ export default defineConfig(({ mode }) => {
   // all server-only SMTP variables inside this Node process.
   Object.assign(process.env, loadEnv(mode, '.', ''))
 
-  // SITE_URL wins; on Vercel the production domain is provided at build time.
-  const productionHost = process.env.VERCEL_PROJECT_PRODUCTION_URL
-  const siteUrl = (process.env.SITE_URL ?? (productionHost ? `https://${productionHost}` : 'http://localhost:4173')).replace(/\/+$/, '')
+  // Production always publishes the official domain so the sitemap, canonical
+  // signals, and structured data cannot drift to a preview or Vercel host.
+  const configuredUrl = process.env.SITE_URL?.replace(/\/+$/, '')
+  const siteUrl = (configuredUrl?.startsWith('https://')
+    ? configuredUrl
+    : mode === 'production'
+      ? 'https://www.mehulsain.in'
+      : 'http://localhost:4173')
 
   return {
     plugins: [localContactApi(), seo(siteUrl, process.env.GOOGLE_SITE_VERIFICATION), react(), tailwindcss()],

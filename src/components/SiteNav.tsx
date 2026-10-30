@@ -36,9 +36,9 @@ export function SiteNav() {
 
   return (
     <header className={`site-nav${menuOpen ? ' is-open' : ''}${scrolled ? ' is-scrolled' : ''}`}>
-      <a className="brand" href="#home" aria-label={`${profile.name} — back to top`} onClick={() => setMenuOpen(false)}>
-        <span className="brand-mark">{profile.initials}</span>
-        <span className="brand-name">{profile.name}</span>
+      <a className="brand" href="#home" onClick={() => setMenuOpen(false)}>
+        <span className="brand-mark" aria-hidden="true">{profile.initials}</span>
+        <h1 className="brand-name">{profile.name}</h1>
       </a>
       <nav id="primary-nav" aria-label="Primary navigation" onClick={(event) => { if ((event.target as HTMLElement).closest('a')) setMenuOpen(false) }}>
         {links.map((link) => <a key={link.href} href={link.href}>{link.label}</a>)}

@@ -2,22 +2,18 @@ import { MagneticButton } from './MagneticButton'
 import { GitHubIcon, LinkedInIcon } from './Icons'
 import { profile } from '../data/profile'
 
-type Props = { preview?: boolean }
-
-export function HeroContent({ preview = false }: Props) {
+export function HeroContent() {
   const [first, last] = profile.name.split(' ')
   const [primaryRole, secondaryRole] = profile.role.split(' | ')
-  const Title = preview ? 'p' : 'h1'
-
   return (
     <div className="hero">
       <div className="hero-glow" aria-hidden="true" />
       <div className="hero-grid" aria-hidden="true" />
       <div className="hero-inner">
         <p className="hero-kicker" data-hero-item><i aria-hidden="true" /> {profile.heroStatTitle} <span>·</span> {profile.location}</p>
-        <Title className="hero-title" data-hero-item>
+        <p className="hero-title" data-hero-item>
           <span>{first}</span> <span className="hero-title-accent">{last}</span>
-        </Title>
+        </p>
         <p className="hero-role" data-hero-item>{primaryRole}<span aria-hidden="true" /> {secondaryRole}</p>
         <p className="hero-lead" data-hero-item>{profile.intro}</p>
         <div className="hero-ctas" data-hero-item>

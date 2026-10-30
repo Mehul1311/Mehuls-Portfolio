@@ -24,8 +24,8 @@ function App() {
     if (!rootRef.current || matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const ctx = gsap.context(() => {
       gsap.utils.toArray<HTMLElement>('main [data-reveal]').forEach((element) => {
-        gsap.fromTo(element, { y: 48, opacity: 0 }, {
-          y: 0, opacity: 1, duration: 1.1, ease: 'power3.out', clearProps: 'transform',
+        gsap.fromTo(element, { y: 48 }, {
+          y: 0, duration: 1.1, ease: 'power3.out', clearProps: 'transform',
           scrollTrigger: { trigger: element, start: 'top 90%', once: true },
         })
       })
@@ -53,7 +53,7 @@ function App() {
       <footer className="site-footer">
         <div className="container footer-inner">
           <a href="#home" className="footer-brand"><span className="brand-mark">{profile.initials}</span>{profile.name}</a>
-          <p>Official website of {profile.name}</p>
+          <p>Official website of {profile.name}, software engineer and full-stack developer.</p>
           <span>© {new Date().getFullYear()} · {profile.location}</span>
         </div>
       </footer>

@@ -142,7 +142,7 @@ export function LaptopIntro({ ready }: Props) {
                       <p className="welcome-foot">Keep scrolling to enter</p>
                     </div>
                     <div className="screen-hero" aria-hidden="true" inert>
-                      <div className="screen-hero-frame"><HeroContent preview /></div>
+                      <div className="screen-hero-frame"><HeroContent /></div>
                     </div>
                     <div className="screen-glare" aria-hidden="true" />
                   </div>
